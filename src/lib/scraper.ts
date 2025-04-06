@@ -1,6 +1,5 @@
-
 import { CourseData, ScrapingConfig } from "@/types";
-import { mockCourseData } from "./sample-data";
+import { mockCourseData, sampleConfigs } from "./sample-data";
 
 /**
  * In a real implementation, this function would make an API call to a backend service
@@ -96,7 +95,6 @@ export const loadSavedConfigs = (): ScrapingConfig[] => {
       return JSON.parse(savedConfigs);
     } else {
       // If no configs are saved, use sample configs as default
-      const { sampleConfigs } = require('./sample-data');
       return sampleConfigs.map((config: ScrapingConfig) => ({
         ...config,
         enabled: true
