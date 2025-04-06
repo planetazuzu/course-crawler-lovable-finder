@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  app:
+    image: node:18-alpine
+    container_name: vite-app
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    command: ["npm", "run", "dev"]
+    environment:
+      - NODE_ENV=development
+    stdin_open: true
+    tty: true
