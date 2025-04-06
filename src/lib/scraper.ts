@@ -1,3 +1,4 @@
+
 import { CourseData, ScrapingConfig } from "@/types";
 import { mockCourseData } from "./sample-data";
 
@@ -70,6 +71,39 @@ export const loadSavedResults = (): CourseData[] => {
     return savedData ? JSON.parse(savedData) : [];
   } catch (error) {
     console.error('Error loading from localStorage:', error);
+    return [];
+  }
+};
+
+/**
+ * Save configurations to local storage
+ */
+export const saveConfigs = (configs: ScrapingConfig[]): void => {
+  try {
+    localStorage.setItem('scrapingConfigs', JSON.stringify(configs));
+  } catch (error) {
+    console.error('Error saving configs to localStorage:', error);
+  }
+};
+
+/**
+ * Load saved configurations from local storage
+ */
+export const loadSavedConfigs = (): ScrapingConfig[] => {
+  try {
+    const savedConfigs = localStorage.getItem('scrapingConfigs');
+    if (savedConfigs) {
+      return JSON.parse(savedConfigs);
+    } else {
+      // If no configs are saved, use sample configs as default
+      const { sampleConfigs } = require('./sample-data');
+      return sampleConfigs.map((config: ScrapingConfig) => ({
+        ...config,
+        enabled: true
+      }));
+    }
+  } catch (error) {
+    console.error('Error loading configs from localStorage:', error);
     return [];
   }
 };

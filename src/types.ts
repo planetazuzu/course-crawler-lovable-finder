@@ -28,4 +28,13 @@ export interface ScrapingConfig {
   baseUrl: string;
   selectors: SelectorConfig;
   transformers?: Record<string, string>;
+  enabled?: boolean;
+}
+
+export interface ImportedConfig {
+  name: string;
+  description: string;
+  baseUrl: string;
+  selectors: Record<string, string>;
+  transformers?: Record<string, string>;
 }
