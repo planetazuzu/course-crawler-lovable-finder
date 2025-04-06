@@ -35,6 +35,6 @@ export interface ImportedConfig {
   name: string;
   description: string;
   baseUrl: string;
-  selectors: Record<string, string>;
+  selectors: SelectorConfig;
   transformers?: Record<string, string>;
 }

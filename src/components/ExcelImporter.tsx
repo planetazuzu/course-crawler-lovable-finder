@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ImportedConfig, ScrapingConfig } from "@/types";
+import { ImportedConfig, ScrapingConfig, SelectorConfig } from "@/types";
 import { Upload, FileSpreadsheet, AlertCircle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -99,12 +99,9 @@ const ExcelImporter = ({ onImport }: ExcelImporterProps) => {
           throw new Error(`Fila ${index + 1}: Faltan campos obligatorios (nombre o URL base)`);
         }
         
-        // Crear configuración base
-        const config: ImportedConfig = {
-          name: row.name,
-          description: row.description || `Configuración para ${row.name}`,
-          baseUrl: row.baseUrl,
-          selectors: {}
+        // Crear configuración de selectores con título por defecto
+        const selectors: SelectorConfig = {
+          title: "" // Default empty string to satisfy the type requirement
         };
         
         // Configurar selectores
@@ -113,9 +110,17 @@ const ExcelImporter = ({ onImport }: ExcelImporterProps) => {
         for (const field of selectorFields) {
           const selectorKey = `selector_${field}`;
           if (row[selectorKey]) {
-            config.selectors[field] = row[selectorKey];
+            selectors[field as keyof SelectorConfig] = row[selectorKey];
           }
         }
+        
+        // Crear configuración base
+        const config: ImportedConfig = {
+          name: row.name,
+          description: row.description || `Configuración para ${row.name}`,
+          baseUrl: row.baseUrl,
+          selectors
+        };
         
         // Configurar transformadores si existen
         const transformerFields = ["transformers_title", "transformers_description", "transformers_startDate", 
@@ -132,6 +137,7 @@ const ExcelImporter = ({ onImport }: ExcelImporterProps) => {
           }
         }
         
+        // Convert to ScrapingConfig
         return {
           id: `imported-${Date.now()}-${index}`,
           ...config,
