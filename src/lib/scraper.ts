@@ -1,3 +1,4 @@
+
 import { CourseData, ScrapingConfig } from "@/types";
 import { mockCourseData, sampleConfigs } from "./sample-data";
 
@@ -19,6 +20,38 @@ export const extractData = async (url: string, config: ScrapingConfig): Promise<
     // Randomly vary the mock data to simulate different extraction results
     subsidized: Math.random() > 0.3
   }));
+};
+
+/**
+ * Extract data from multiple URLs
+ */
+export const extractMultipleUrls = async (urls: string[], config: ScrapingConfig): Promise<CourseData[]> => {
+  if (urls.length === 0) return [];
+  
+  // Log the extraction request for debugging
+  console.log("Multiple URLs extraction request:", { urls, config });
+  
+  // Simulate API call delay - longer for multiple URLs
+  await new Promise(resolve => setTimeout(resolve, 2000 + (urls.length * 500)));
+  
+  let allResults: CourseData[] = [];
+  
+  // For demo purposes, we'll generate slightly different results for each URL
+  for (const url of urls) {
+    // Generate some mock results for each URL with different variations
+    const urlResults = mockCourseData.map(course => ({
+      ...course,
+      title: `${course.title} - ${url.split('//')[1].split('/')[0]}`,
+      url: url + '/curso/' + Math.floor(Math.random() * 1000),
+      subsidized: Math.random() > 0.3,
+      cost: `${Math.floor(Math.random() * 1000 + 100)}€`
+    }));
+    
+    // Add to combined results
+    allResults = [...allResults, ...urlResults];
+  }
+  
+  return allResults;
 };
 
 /**

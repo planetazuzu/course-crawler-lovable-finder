@@ -14,11 +14,11 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle, Settings } from "lucide-react";
-import { extractData, loadSavedConfigs, loadSavedResults } from "@/lib/scraper";
+import { extractData, extractMultipleUrls, loadSavedConfigs, loadSavedResults } from "@/lib/scraper";
 import { CourseData, ScrapingConfig } from "@/types";
 
 const Index = () => {
-  const [url, setUrl] = useState<string>("");
+  const [urls, setUrls] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [results, setResults] = useState<CourseData[]>(loadSavedResults());
   const [availableConfigs, setAvailableConfigs] = useState<ScrapingConfig[]>([]);
@@ -39,10 +39,10 @@ const Index = () => {
   }, []);
 
   const handleExtract = async () => {
-    if (!url) {
+    if (urls.length === 0) {
       toast({
-        title: "URL Requerida",
-        description: "Por favor introduce una URL para extraer datos",
+        title: "URLs Requeridas",
+        description: "Por favor introduce al menos una URL para extraer datos",
         variant: "destructive",
       });
       return;
@@ -60,16 +60,17 @@ const Index = () => {
     try {
       setIsLoading(true);
       
-      // En una implementación real, esto haría una llamada a un servicio backend
-      // Para la demostración, simulamos la extracción con datos de ejemplo
+      // Usar la configuración seleccionada o la personalizada
       const config = selectedConfig || JSON.parse(customConfig);
-      const extractedData = await extractData(url, config);
+      
+      // Extraer datos de múltiples URLs
+      const extractedData = await extractMultipleUrls(urls, config);
       
       setResults(extractedData);
       
       toast({
         title: "Extracción Completada",
-        description: `Se han extraído ${extractedData.length} cursos con éxito`,
+        description: `Se han extraído ${extractedData.length} cursos de ${urls.length} URLs con éxito`,
       });
     } catch (error) {
       console.error("Error de extracción:", error);
@@ -134,10 +135,10 @@ const Index = () => {
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <h2 className="text-2xl font-bold mb-4">URL Objetivo</h2>
+                <h2 className="text-2xl font-bold mb-4">URLs Objetivo</h2>
                 <UrlInput 
-                  url={url} 
-                  setUrl={setUrl} 
+                  urls={urls} 
+                  setUrls={setUrls} 
                   onExtract={handleExtract} 
                   isLoading={isLoading} 
                 />
