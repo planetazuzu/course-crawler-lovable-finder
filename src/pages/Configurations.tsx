@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Plus, FilePlus2, ArrowLeft, Save, Trash2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import ExcelImporter from "@/components/ExcelImporter";
+import ExcelImporter from "@/components/excel-importer";
 import { loadSavedConfigs, saveConfigs } from "@/lib/scraper";
 
 const Configurations = () => {
